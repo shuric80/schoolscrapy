@@ -21,8 +21,7 @@ ua = UserAgent()
 
 def make_timeout():
     ## Плавающее время паузы
-    return random.randint(4,12)
-
+    return random.randint(4,9)
 
 
 def load_school(id, session):
@@ -60,7 +59,7 @@ def parse_school_page(text, code):
     pattern = dict()
     pattern["director"] = u"Директор ([А-Яа-я, ]+)"
     pattern["place"] = u"Принадлежность ([А-Яа-я, ]+)"
-    pattern["type"] = u"Тип ([А-Яа-я, ]+)"
+    pattern["ctype"] = u"Тип ([А-Яа-я, ]+)"
     pattern["phone"] = u"Телефон ([0-9\(\)-;\s]+)"
     pattern["address"] = u"Адрес ([0-9а-яА-Я ,-\.]+)"
     pattern["email"] = u"E-mail:\n([\.a-zA-Z0-9@-]+)"
@@ -69,7 +68,7 @@ def parse_school_page(text, code):
     text = soup.get_text()
 
     result = dict()
-    result['title'] = soup.find('h1').next
+    result['title'] = soup.h1.text
     result['code'] = code
 
     for k,v in pattern.items():
@@ -77,6 +76,9 @@ def parse_school_page(text, code):
             result[k] = re.findall(v, text)[0]
         except IndexError:
             result[k] = None
+
+        if result['site']:
+            result['site'] = ''.join(result['site'].split('+'))
 
     return result
 
