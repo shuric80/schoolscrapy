@@ -7,7 +7,8 @@ import time
 import requests
 from bs4 import BeautifulSoup
 import logging
-
+import random
+from fake_useragent import UserAgent
 import model
 
 logger  = logging.getLogger(__name__)
@@ -15,27 +16,32 @@ logger.setLevel(logging.INFO)
 logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level = logging.INFO, filename = u'app.log')
 
 s = requests.Session()
-header = {
-     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0'}
+ua = UserAgent()
+
+
+def make_timeout():
+    ## Плавающее время паузы
+    return random.randint(4,12)
+
 
 
 def load_school(id, session):
-    ## страница школы
+    ## страница школы. Используем случайный user agent
     url = 'http://www.edu.ru/schools/catalog/school/{}'.format(id)
-    request = session.get(url, headers = header)
+    request = session.get(url, headers = {'User-Agent':ua.random })
     return request.text, request.status_code
 
 
 def load_catalog(id, page, session):
     #  страница с каталого школ региона
     url = 'http://www.edu.ru/schools/catalog/{}/_page/{}/'.format(id, page)
-    request = session.get(url, headers = header)
+    request = session.get(url, headers = {'User-Agent':ua.random })
     return request.text, request.status_code
 
 
 def load_index_page(session):
     url = 'http://www.edu.ru/schools/catalog/'
-    request = session.get(url, headers = header)
+    request = session.get(url, headers = {'User-Agent': ua.random })
     return request.text, request.status_code
 
 
@@ -89,6 +95,7 @@ def parse_region_page(text):
 
 
 if __name__ == '__main__':
+    counter = 0
     logger.info('Start app')
     logger.info('Create database.')
     model.db_init()
@@ -113,7 +120,7 @@ if __name__ == '__main__':
             list_index_schools = parse_region_page(content)
             # берем коды школ со страницы
             for cid in list_index_schools:
-                time.sleep(3)
+                time.sleep(make_timeout())
                 content, code = load_school(cid, s)
 
                 if code != 200:
@@ -122,8 +129,12 @@ if __name__ == '__main__':
 
                 d = parse_school_page(content, cid)
                 ret = model.add_school(d)
+                counter += 1
 
                 if ret:
-                    logger.info('Done. New school saved:{}'.format(cid))
+                    logger.info('{} School saved:{}'.format(counter,cid))
                 else:
                     logger.error('School didn\'t save. code:{}'.format(cid))
+
+    logger.info('App done.')
+    sys.exit(0)
