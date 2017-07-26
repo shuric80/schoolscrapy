@@ -1,0 +1,6 @@
+schools.sqlite.db
+__pycache__/*
+env/*
+db.log
+
+
