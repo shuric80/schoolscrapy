@@ -12,7 +12,7 @@ import model
 
 logger  = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level = logging.INFO, filename = u'view.log')
+logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level = logging.INFO, filename = u'app.log')
 
 s = requests.Session()
 header = {

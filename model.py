@@ -7,11 +7,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
 ## Настройка логгирования
-handler = logging.FileHandler('db.log')
-handler.setLevel(logging.DEBUG)
-logger = logging.getLogger('sqlalchemy')
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 ## настройка базы данных
 Base = declarative_base()
