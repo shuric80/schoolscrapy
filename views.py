@@ -12,6 +12,7 @@ import model
 
 logger  = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level = logging.INFO, filename = u'view.log')
 
 s = requests.Session()
 header = {
@@ -106,7 +107,7 @@ if __name__ == '__main__':
             content, code = load_catalog(index, page, s)
 
             if code != 200:
-                logging.info('Max number page is {}'.format(page))
+                logging.info('Max number page is {} for index:{}'.format(page, index))
                 break
 
             list_index_schools = parse_region_page(content)
