@@ -77,8 +77,9 @@ def parse_school_page(text, code):
         except IndexError:
             result[k] = None
 
-        if result['site']:
-            result['site'] = ''.join(result['site'].split('+'))
+
+    if result["site"]:
+        result["site"] = ''.join(result['site'].split('+'))
 
     return result
 

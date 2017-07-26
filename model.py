@@ -13,7 +13,7 @@ logger.setLevel(logging.INFO)
 
 ## настройка базы данных
 Base = declarative_base()
-engine = create_engine('sqlite:///schools.sqlite.db', echo = False)
+engine = create_engine('sqlite:///schools.sqlite', echo = False)
 Session = sessionmaker(bind=engine)
 session = Session()
 
